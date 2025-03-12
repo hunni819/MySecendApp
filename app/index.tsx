@@ -2,6 +2,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   TouchableHighlight,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -9,6 +10,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '@/color';
+import { useState } from 'react';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,30 +28,56 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: theme.grey,
   },
+  input: {
+    marginTop: 10,
+    fontSize: 18,
+    backgroundColor: 'white',
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    borderRadius: 40,
+  },
 });
 
 export default function Index() {
+  const [working, setWorking] = useState(false);
+  const travel = () => setWorking(false);
+  const work = () => setWorking(true);
+
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
 
       <View style={styles.header}>
         <Pressable
-          onPress={() => console.log('Pressed')}
-          hitSlop={10}
-          pressRetentionOffset={{ bottom: 80, left: 80, right: 80, top: 80 }}
+          onPress={travel}
+          hitSlop={30}
+          pressRetentionOffset={{ bottom: 20, left: 20, right: 20, top: 20 }}
         >
-          <Text style={styles.button}>Travel</Text>
+          <Text
+            style={{ ...styles.button, color: !working ? 'white' : theme.grey }}
+          >
+            Work
+          </Text>
         </Pressable>
 
         <Pressable
-          onPress={() => console.log('Pressed')}
-          hitSlop={10}
-          pressRetentionOffset={{ bottom: 80, left: 80, right: 80, top: 80 }}
+          onPress={work}
+          hitSlop={30}
+          pressRetentionOffset={{ bottom: 20, left: 20, right: 20, top: 20 }}
         >
-          <Text style={styles.button}>Work</Text>
+          <Text
+            style={{ ...styles.button, color: working ? 'white' : theme.grey }}
+          >
+            Travel
+          </Text>
         </Pressable>
       </View>
+
+      <TextInput
+        style={styles.input}
+        placeholder={!working ? 'Add To do!' : 'Where do you want to go?'}
+        placeholderTextColor={'#ddd'}
+      ></TextInput>
     </View>
   );
 }
