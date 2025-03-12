@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Button,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -46,6 +47,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   toDos: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -69,8 +73,6 @@ export default function Index() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState<string>('');
   const [toDos, setToDos] = useState<toDosType>({});
-
-  console.log(loading);
 
   const travel = () => setWorking(false);
   const work = () => setWorking(true);
@@ -99,7 +101,12 @@ export default function Index() {
     }
   };
 
-  const removeToDos = () => {};
+  const removeToDos = async (key: string) => {
+    const newToDos = { ...toDos };
+    delete newToDos[key];
+    setToDos(newToDos);
+    await saveToDos(newToDos);
+  };
 
   const addToDos = async () => {
     if (text === '') return;
@@ -163,6 +170,9 @@ export default function Index() {
             toDos[key].working === working ? (
               <View style={styles.toDos} key={index}>
                 <Text style={styles.toDosText}>{toDos[key].text}</Text>
+                <View>
+                  <Button title={'X'} onPress={() => removeToDos(key)} />
+                </View>
               </View>
             ) : null
           )
