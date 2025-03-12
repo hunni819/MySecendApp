@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -39,6 +40,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 40,
   },
+  loading: {
+    marginTop: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   toDos: {
     marginTop: 20,
     paddingHorizontal: 20,
@@ -56,15 +62,20 @@ const STORAGE_KEY = '@todos';
 
 export default function Index() {
   useEffect(() => {
-    loadToDos();
+    new Promise(() => setTimeout(() => loadToDos(), 3000));
   }, []);
 
+  const [loading, setLoading] = useState<boolean>(true);
   const [working, setWorking] = useState(true);
   const [text, setText] = useState<string>('');
   const [toDos, setToDos] = useState<toDosType>({});
 
+  console.log(loading);
+
   const travel = () => setWorking(false);
   const work = () => setWorking(true);
+  const loadEnd = () => setLoading(false);
+  const loadStart = () => setLoading(true);
 
   const onChangeText = (payload: string) => setText(payload);
 
@@ -78,10 +89,13 @@ export default function Index() {
 
   const loadToDos = async () => {
     try {
+      loadStart();
       const s = (await AsyncStorage.getItem(STORAGE_KEY)) ?? '';
       setToDos(JSON.parse(s));
     } catch (e) {
       if (e instanceof Error) console.error(e.message);
+    } finally {
+      loadEnd();
     }
   };
 
@@ -139,13 +153,19 @@ export default function Index() {
         placeholderTextColor={'#ddd'}
       />
 
-      <ScrollView>
-        {Object.keys(toDos).map((key, index) =>
-          toDos[key].working === working ? (
-            <View style={styles.toDos} key={index}>
-              <Text style={styles.toDosText}>{toDos[key].text}</Text>
-            </View>
-          ) : null
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {loading ? (
+          <View style={styles.loading}>
+            <ActivityIndicator size="small" color="#ddd" />
+          </View>
+        ) : (
+          Object.keys(toDos).map((key, index) =>
+            toDos[key].working === working ? (
+              <View style={styles.toDos} key={index}>
+                <Text style={styles.toDosText}>{toDos[key].text}</Text>
+              </View>
+            ) : null
+          )
         )}
       </ScrollView>
     </View>
