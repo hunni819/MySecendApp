@@ -4,14 +4,12 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '@/color';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type toDosType = {
   [key: string]: any;
@@ -54,7 +52,13 @@ const styles = StyleSheet.create({
   },
 });
 
+const STORAGE_KEY = '@todos';
+
 export default function Index() {
+  useEffect(() => {
+    loadToDos();
+  }, []);
+
   const [working, setWorking] = useState(true);
   const [text, setText] = useState<string>('');
   const [toDos, setToDos] = useState<toDosType>({});
@@ -64,9 +68,33 @@ export default function Index() {
 
   const onChangeText = (payload: string) => setText(payload);
 
-  const alertMsg = () => {
+  const saveToDos = async (toSave: Object) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    } catch (e) {
+      if (e instanceof Error) console.error(e.message);
+    }
+  };
+
+  const loadToDos = async () => {
+    try {
+      const s = (await AsyncStorage.getItem(STORAGE_KEY)) ?? '';
+      setToDos(JSON.parse(s));
+    } catch (e) {
+      if (e instanceof Error) console.error(e.message);
+    }
+  };
+
+  const removeToDos = () => {};
+
+  const addToDos = async () => {
     if (text === '') return;
-    setToDos((prev) => ({ ...prev, [Date.now()]: { text, work: working } }));
+    setToDos((prev) => ({ ...prev, [Date.now()]: { text, working } }));
+    try {
+      await saveToDos({ ...toDos, [Date.now()]: { text, working } });
+    } catch (e) {
+      if (e instanceof Error) console.error(e.message);
+    }
     setText('');
   };
 
@@ -101,7 +129,7 @@ export default function Index() {
       </View>
 
       <TextInput
-        onSubmitEditing={alertMsg}
+        onSubmitEditing={addToDos}
         style={styles.input}
         autoCapitalize={'sentences'}
         onChangeText={onChangeText}
@@ -111,12 +139,14 @@ export default function Index() {
         placeholderTextColor={'#ddd'}
       />
 
-      <ScrollView style={styles.main}>
-        {Object.keys(toDos).map((key, index) => (
-          <View style={styles.toDos} key={index}>
-            <Text style={styles.toDosText}>{toDos[key].text}</Text>
-          </View>
-        ))}
+      <ScrollView>
+        {Object.keys(toDos).map((key, index) =>
+          toDos[key].working === working ? (
+            <View style={styles.toDos} key={index}>
+              <Text style={styles.toDosText}>{toDos[key].text}</Text>
+            </View>
+          ) : null
+        )}
       </ScrollView>
     </View>
   );
