@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Alert,
   Button,
   Pressable,
   ScrollView,
@@ -9,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '@/color';
 import { useEffect, useState } from 'react';
@@ -102,10 +104,21 @@ export default function Index() {
   };
 
   const removeToDos = async (key: string) => {
-    const newToDos = { ...toDos };
-    delete newToDos[key];
-    setToDos(newToDos);
-    await saveToDos(newToDos);
+    Alert.alert('Delete To Do', 'Are you Sure?', [
+      {
+        text: 'Cancel',
+      },
+      {
+        text: 'Ok',
+        style: 'destructive',
+        onPress: async () => {
+          const newToDos = { ...toDos };
+          delete newToDos[key];
+          setToDos(newToDos);
+          await saveToDos(newToDos);
+        },
+      },
+    ]);
   };
 
   const addToDos = async () => {
@@ -171,7 +184,12 @@ export default function Index() {
               <View style={styles.toDos} key={index}>
                 <Text style={styles.toDosText}>{toDos[key].text}</Text>
                 <View>
-                  <Button title={'X'} onPress={() => removeToDos(key)} />
+                  <FontAwesome
+                    name="trash-o"
+                    size={24}
+                    color="red"
+                    onPress={() => removeToDos(key)}
+                  />
                 </View>
               </View>
             ) : null
