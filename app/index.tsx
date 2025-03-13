@@ -118,9 +118,15 @@ export default function Index() {
 
   const addToDos = async () => {
     if (text === '') return;
-    setToDos((prev) => ({ ...prev, [Date.now()]: { text, working } }));
+    setToDos((prev) => ({
+      ...prev,
+      [Date.now()]: { text, working },
+    }));
     try {
-      await saveToDos({ ...toDos, [Date.now()]: { text, working } });
+      await saveToDos({
+        ...toDos,
+        [Date.now()]: { text, working },
+      });
     } catch (e) {
       if (e instanceof Error) console.error(e.message);
     }
@@ -179,7 +185,7 @@ export default function Index() {
               <Todo
                 key={index}
                 toDos={toDos}
-                toDo={toDos[key]}
+                toDo={key}
                 saveToDos={saveToDos(toDos)}
                 setToDos={setToDos}
               />

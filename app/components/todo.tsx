@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 });
 
 const Todo = (props: any) => {
-  const { toDos, todo: key, saveToDos, setToDos } = props;
+  const { toDos, toDo: key, saveToDos, setToDos } = props;
 
   const [edit, setEdit] = useState<boolean>(false);
   const [content, setContent] = useState<string>('');
