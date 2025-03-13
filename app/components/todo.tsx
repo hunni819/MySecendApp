@@ -53,7 +53,7 @@ const Todo = (props: any) => {
         text: 'Cancel',
         onPress: () => {
           setEdit(false);
-          setContent('');
+          setContent(toDos[key].text);
         },
       },
       {
@@ -64,14 +64,12 @@ const Todo = (props: any) => {
           newToDos[key].text = content;
           setToDos(newToDos);
           setEdit(false);
-          setContent('');
+          setContent(content);
           await saveToDos(newToDos);
         },
       },
     ]);
   };
-
-  console.log(edit);
 
   const removeToDos = async (key: string) => {
     Alert.alert('Delete Todo', 'Are you Sure?', [
@@ -122,8 +120,6 @@ const Todo = (props: any) => {
           onChangeText={onChangeContent}
           value={content}
           returnKeyType={'done'}
-          placeholder={'Please write your TodoList!'}
-          placeholderTextColor={'grey'}
         />
       ) : toDos[key].completed ? (
         <Text
