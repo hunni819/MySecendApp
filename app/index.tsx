@@ -62,9 +62,9 @@ const styles = StyleSheet.create({
   toDosText: {
     fontSize: 20,
     color: 'white',
-    backgroundColor: 'red',
     maxWidth: '70%',
   },
+  content: {},
   toDosFunc: {
     flexDirection: 'row',
     gap: 10,
@@ -82,6 +82,8 @@ export default function Index() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState<string>('');
   const [toDos, setToDos] = useState<toDosType>({});
+  const [edit, setEdit] = useState<boolean>(false);
+  const [content, setContent] = useState<string>('');
 
   const travel = () => setWorking(false);
   const work = () => setWorking(true);
@@ -89,6 +91,7 @@ export default function Index() {
   const loadStart = () => setLoading(true);
 
   const onChangeText = (payload: string) => setText(payload);
+  const onChangeContent = (payload: string) => setContent(payload);
 
   const saveToDos = async (toSave: Object) => {
     try {
@@ -111,16 +114,52 @@ export default function Index() {
   };
 
   const removeToDos = async (key: string) => {
-    Alert.alert('Delete To Do', 'Are you Sure?', [
+    Alert.alert('Delete Todo', 'Are you Sure?', [
       {
         text: 'Cancel',
       },
       {
-        text: 'Ok',
+        text: "I'm Sure",
         style: 'destructive',
         onPress: async () => {
           const newToDos = { ...toDos };
           delete newToDos[key];
+          setToDos(newToDos);
+          await saveToDos(newToDos);
+        },
+      },
+    ]);
+  };
+
+  // const editTodo = (key: string) => {
+  //   Alert.alert('Edit Todo', 'Are you edit Content?', [
+  //     {
+  //       text: 'Cancel',
+  //     },
+  //     {
+  //       text: 'Ok',
+  //       style: 'destructive',
+  //       onPress: async () => {
+  //         const newToDos = { ...toDos };
+  //         newToDos[key].text = content;
+  //         setToDos(newToDos);
+  //         await saveToDos(newToDos);
+  //       },
+  //     },
+  //   ]);
+  // };
+
+  const doneTodos = (key: string) => {
+    Alert.alert('Completed Todo', 'Are you completed your Todo?', [
+      {
+        text: "No, I'm yet",
+      },
+      {
+        text: 'Yes, I do',
+        style: 'destructive',
+        onPress: async () => {
+          const newToDos = { ...toDos };
+          newToDos[key].completed = true;
           setToDos(newToDos);
           await saveToDos(newToDos);
         },
@@ -189,22 +228,57 @@ export default function Index() {
           Object.keys(toDos).map((key, index) =>
             toDos[key].working === working ? (
               <View style={styles.toDos} key={index}>
-                <Text style={styles.toDosText}>{toDos[key].text}</Text>
+                {toDos[key].completed ? (
+                  <FontAwesome name="check-circle" size={24} color="green" />
+                ) : null}
+                {edit ? (
+                  <TextInput
+                    onSubmitEditing={() => {}}
+                    style={styles.content}
+                    autoCapitalize={'sentences'}
+                    onChangeText={onChangeContent}
+                    value={content}
+                    returnKeyType={'done'}
+                    placeholder={''}
+                    placeholderTextColor={''}
+                  />
+                ) : toDos[key].completed ? (
+                  <Text
+                    style={{
+                      ...styles.toDosText,
+                      color: 'grey',
+                      textDecorationLine: 'line-through',
+                    }}
+                  >
+                    {toDos[key].text}
+                  </Text>
+                ) : (
+                  <Text style={styles.toDosText}>{toDos[key].text}</Text>
+                )}
                 <View style={styles.toDosFunc}>
-                  <View>
-                    <Feather name="check-circle" size={24} color="green" />
-                  </View>
-                  <View>
-                    <Feather name="edit" size={24} color="white" />
-                  </View>
-                  <View>
-                    <FontAwesome
-                      name="trash-o"
+                  {!toDos[key].completed ? (
+                    <Feather
+                      name="check-circle"
                       size={24}
-                      color="red"
-                      onPress={() => removeToDos(key)}
+                      color="green"
+                      onPress={() => doneTodos(key)}
                     />
-                  </View>
+                  ) : null}
+                  {!toDos[key].completed ? (
+                    <Feather
+                      name="edit"
+                      size={24}
+                      color="white"
+                      onPress={() => {}}
+                    />
+                  ) : null}
+
+                  <FontAwesome
+                    name="trash-o"
+                    size={24}
+                    color="red"
+                    onPress={() => removeToDos(key)}
+                  />
                 </View>
               </View>
             ) : null
