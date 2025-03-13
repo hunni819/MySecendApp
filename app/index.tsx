@@ -72,30 +72,57 @@ const styles = StyleSheet.create({
 });
 
 const STORAGE_KEY = '@todos';
+const ACTIVED_TAB = '@tab';
 
 export default function Index() {
+  const [working, setWorking] = useState(true);
+
   useEffect(() => {
+    loadActivedTab();
     new Promise(() => setTimeout(() => loadToDos(), 3000));
   }, []);
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [working, setWorking] = useState(true);
+
   const [text, setText] = useState<string>('');
   const [toDos, setToDos] = useState<toDosType>({});
   const [edit, setEdit] = useState<boolean>(false);
   const [content, setContent] = useState<string>('');
 
-  const travel = () => setWorking(false);
-  const work = () => setWorking(true);
+  const travel = async () => {
+    setWorking(false);
+    await SaveActivedTab(false);
+  };
+  const work = async () => {
+    setWorking(true);
+    await SaveActivedTab(true);
+  };
   const loadEnd = () => setLoading(false);
   const loadStart = () => setLoading(true);
 
   const onChangeText = (payload: string) => setText(payload);
   const onChangeContent = (payload: string) => setContent(payload);
 
+  const SaveActivedTab = async (working: boolean) => {
+    try {
+      await AsyncStorage.setItem(ACTIVED_TAB, JSON.stringify(working));
+    } catch (e) {
+      if (e instanceof Error) console.error(e.message);
+    }
+  };
+
   const saveToDos = async (toSave: Object) => {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    } catch (e) {
+      if (e instanceof Error) console.error(e.message);
+    }
+  };
+
+  const loadActivedTab = async () => {
+    try {
+      const s = (await AsyncStorage.getItem(ACTIVED_TAB)) ?? 'true';
+      setWorking(JSON.parse(s));
     } catch (e) {
       if (e instanceof Error) console.error(e.message);
     }
