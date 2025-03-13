@@ -20,10 +20,22 @@ const styles = StyleSheet.create({
     color: 'white',
     maxWidth: '70%',
   },
-  content: {},
+  content: {
+    flex: 1,
+    color: 'white',
+    backgroundColor: '#111111',
+    borderRadius: 40,
+    maxWidth: '70%',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
   toDosFunc: {
     flexDirection: 'row',
     gap: 10,
+  },
+  completed: {
+    color: 'grey',
+    textDecorationLine: 'line-through',
   },
 });
 
@@ -31,27 +43,35 @@ const Todo = (props: any) => {
   const { toDos, toDo: key, saveToDos, setToDos } = props;
 
   const [edit, setEdit] = useState<boolean>(false);
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string>(toDos[key].text);
 
   const onChangeContent = (payload: string) => setContent(payload);
 
-  // const editTodo = (key: string) => {
-  //   Alert.alert('Edit Todo', 'Are you edit Content?', [
-  //     {
-  //       text: 'Cancel',
-  //     },
-  //     {
-  //       text: 'Ok',
-  //       style: 'destructive',
-  //       onPress: async () => {
-  //         const newToDos = { ...toDos };
-  //         newToDos[key].text = content;
-  //         setToDos(newToDos);
-  //         await saveToDos(newToDos);
-  //       },
-  //     },
-  //   ]);
-  // };
+  const editTodo = (key: string) => {
+    Alert.alert('Edit Todo', 'Are you edit Content?', [
+      {
+        text: 'Cancel',
+        onPress: () => {
+          setEdit(false);
+          setContent('');
+        },
+      },
+      {
+        text: 'Ok',
+        style: 'destructive',
+        onPress: async () => {
+          const newToDos = { ...toDos };
+          newToDos[key].text = content;
+          setToDos(newToDos);
+          setEdit(false);
+          setContent('');
+          await saveToDos(newToDos);
+        },
+      },
+    ]);
+  };
+
+  console.log(edit);
 
   const removeToDos = async (key: string) => {
     Alert.alert('Delete Todo', 'Are you Sure?', [
@@ -96,21 +116,20 @@ const Todo = (props: any) => {
       ) : null}
       {edit ? (
         <TextInput
-          onSubmitEditing={() => {}}
+          onSubmitEditing={() => editTodo(key)}
           style={styles.content}
           autoCapitalize={'sentences'}
           onChangeText={onChangeContent}
           value={content}
           returnKeyType={'done'}
-          placeholder={''}
-          placeholderTextColor={''}
+          placeholder={'Please write your TodoList!'}
+          placeholderTextColor={'grey'}
         />
       ) : toDos[key].completed ? (
         <Text
           style={{
             ...styles.toDosText,
-            color: 'grey',
-            textDecorationLine: 'line-through',
+            ...styles.completed,
           }}
         >
           {toDos[key].text}
@@ -128,7 +147,12 @@ const Todo = (props: any) => {
           />
         ) : null}
         {!toDos[key].completed ? (
-          <Feather name="edit" size={24} color="white" onPress={() => {}} />
+          <Feather
+            name="edit"
+            size={24}
+            color="white"
+            onPress={() => setEdit(true)}
+          />
         ) : null}
 
         <FontAwesome
