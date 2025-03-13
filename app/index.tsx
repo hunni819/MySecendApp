@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Feather from '@expo/vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '@/color';
 import { useEffect, useState } from 'react';
@@ -54,13 +55,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 20,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 20,
     borderRadius: 15,
     backgroundColor: theme.toDoBg,
   },
   toDosText: {
     fontSize: 20,
     color: 'white',
+    backgroundColor: 'red',
+    maxWidth: '70%',
+  },
+  toDosFunc: {
+    flexDirection: 'row',
+    gap: 10,
   },
 });
 
@@ -183,13 +190,21 @@ export default function Index() {
             toDos[key].working === working ? (
               <View style={styles.toDos} key={index}>
                 <Text style={styles.toDosText}>{toDos[key].text}</Text>
-                <View>
-                  <FontAwesome
-                    name="trash-o"
-                    size={24}
-                    color="red"
-                    onPress={() => removeToDos(key)}
-                  />
+                <View style={styles.toDosFunc}>
+                  <View>
+                    <Feather name="check-circle" size={24} color="green" />
+                  </View>
+                  <View>
+                    <Feather name="edit" size={24} color="white" />
+                  </View>
+                  <View>
+                    <FontAwesome
+                      name="trash-o"
+                      size={24}
+                      color="red"
+                      onPress={() => removeToDos(key)}
+                    />
+                  </View>
                 </View>
               </View>
             ) : null
