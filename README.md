@@ -51,4 +51,4 @@ Join our community of developers creating universal apps.
 
 ## (Personal) Publish Expo-Project
 
-- [Expo publish](https://expo.dev/preview/update?message=eas%20build%20%ED%95%B4%EB%B3%B4%EA%B8%B0&updateRuntimeVersion=1.0.0&createdAt=2025-03-14T11%3A11%3A06.764Z&slug=exp&projectId=a584c11b-5e52-4318-ae35-c1a2f708f033&group=39604170-9c77-4335-ad0d-5436bda25ab6)
+- [Expo publish](https://expo.dev/preview/update?message=Deploy%20Todo&updateRuntimeVersion=1.0.0&createdAt=2025-03-14T14%3A03%3A13.312Z&slug=exp&projectId=a584c11b-5e52-4318-ae35-c1a2f708f033&group=6668bd86-37e8-45f7-b5a6-0969205e8ac0)
