@@ -101,6 +101,8 @@ const Todo = (props: any) => {
           const newToDos = { ...toDos };
           newToDos[key].completed = true;
           setToDos(newToDos);
+          setEdit(false);
+          setContent(toDos[key].text);
           await saveToDos(newToDos);
         },
       },
