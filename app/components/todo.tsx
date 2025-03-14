@@ -80,31 +80,32 @@ const Todo = (props: any) => {
 
   const removeToDos = async (key: string) => {
     // Web
-    // if (Platform.OS === 'web') {
-    //   const ok = confirm('Do you want ro delete this Todo');
-    //   if (ok) {
-    //     const newToDos = { ...toDos };
-    //     delete newToDos[key];
-    //     setToDos(newToDos);
-    //     await saveToDos(newToDos);
-    //     return;
-    //   }
-    // } else {}
-    Alert.alert('Delete Todo', 'Are you Sure?', [
-      {
-        text: 'Cancel',
-      },
-      {
-        text: "I'm Sure",
-        style: 'destructive',
-        onPress: async () => {
-          const newToDos = { ...toDos };
-          delete newToDos[key];
-          setToDos(newToDos);
-          await saveToDos(newToDos);
+    if (Platform.OS === 'web') {
+      const ok = confirm('Do you want ro delete this Todo');
+      if (ok) {
+        const newToDos = { ...toDos };
+        delete newToDos[key];
+        setToDos(newToDos);
+        await saveToDos(newToDos);
+      }
+    } else {
+      Alert.alert('Delete Todo', 'Are you Sure?', [
+        {
+          text: 'Cancel',
         },
-      },
-    ]);
+        {
+          text: "I'm Sure",
+          style: 'destructive',
+          onPress: async () => {
+            const newToDos = { ...toDos };
+            delete newToDos[key];
+            setToDos(newToDos);
+            await saveToDos(newToDos);
+          },
+        },
+      ]);
+      return;
+    }
   };
 
   const doneTodos = (key: string) => {

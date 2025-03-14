@@ -186,7 +186,7 @@ export default function Index() {
                 key={index}
                 toDos={toDos}
                 toDo={key}
-                saveToDos={saveToDos(toDos)}
+                saveToDos={saveToDos}
                 setToDos={setToDos}
               />
             ) : null
