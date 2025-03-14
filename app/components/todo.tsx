@@ -2,7 +2,14 @@ import { theme } from '@/color';
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Alert,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 const styles = StyleSheet.create({
   toDos: {
@@ -72,6 +79,17 @@ const Todo = (props: any) => {
   };
 
   const removeToDos = async (key: string) => {
+    // Web
+    // if (Platform.OS === 'web') {
+    //   const ok = confirm('Do you want ro delete this Todo');
+    //   if (ok) {
+    //     const newToDos = { ...toDos };
+    //     delete newToDos[key];
+    //     setToDos(newToDos);
+    //     await saveToDos(newToDos);
+    //     return;
+    //   }
+    // } else {}
     Alert.alert('Delete Todo', 'Are you Sure?', [
       {
         text: 'Cancel',
